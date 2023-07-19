@@ -27,9 +27,9 @@ TARGET_LDFLAGS += " -pthread -lrt"
 #PACKAGECONFIG[aesd-assignments] += " pthread rt"
 
 
-# from Building a Yocto Image lesson, using startup script developed in assignment 4
+# Update rc.d class for install the init service /etc/rc5.d/
 inherit update-rc.d
-INITSCRIPT_PACKAGES = "${PN}"
+INITSCRIPT_PACKAGES = "${PN}" #flag the package as one which uses init scripts
 INITSCRIPT_NAME:${PN} = "aesdsocket-start-stop"
 
 do_configure () {
