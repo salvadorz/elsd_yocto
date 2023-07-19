@@ -1,0 +1,29 @@
+diff --git a/Makefile b/Makefile
+index 7b08c49..c4f2e2e 100644
+--- a/Makefile
++++ b/Makefile
+@@ -1,8 +1,5 @@
+ 
+-SUBDIRS =  misc-progs misc-modules \
+-           skull scull scullc scullp lddbus sculld scullv shortprint simple tty \
+-	   pci usb\
+-	   sbull snull short
++SUBDIRS =  misc-modules scull
+ 
+ all: subdirs
+ 
+diff --git a/scull/scull_load b/scull/scull_load
+index 33b4501..cffdd86 100755
+--- a/scull/scull_load
++++ b/scull/scull_load
+@@ -13,8 +13,8 @@ fi
+ 
+ # invoke insmod with all arguments we got
+ # and use a pathname, as insmod doesn't look in . by default
+-if [ -f /lib/modules/$(uname -r)/extra/$module.ko ]; then
+-	insmod /lib/modules/$(uname -r)/extra/$module.ko $* || exit 1
++if [ -f /lib/modules/$(uname -r)/$module.ko ]; then
++	insmod /lib/modules/$(uname -r)/$module.ko $* || exit 1
+ else
+     insmod ./$module.ko || exit 1
+ fi

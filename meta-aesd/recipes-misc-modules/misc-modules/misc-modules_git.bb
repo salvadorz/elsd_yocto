@@ -4,33 +4,33 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/MIT;md5=0835ade698e0bcf8506ecda
 
 # TODO: Set this  with the path to your assignments rep.  Use ssh protocol and see lecture notes
 # about how to setup ssh-agent for passwordless access
-SRC_URI = "git://git@github.com/salvadorz/elsd;protocol=ssh;branch=master"
+SRC_URI = "git://git@github.com/salvadorz/ldd3;protocol=ssh;branch=master \
+        file://0001-makefile.patch \
+        file://misc-modules-start-stop"
 
 PV = "1.0+git${SRCPV}"
 # TODO: set to reference a specific commit hash in your assignment repo
-SRCREV = "45e707141c5195cde3b78dfd4a30ea8779367ba2"
+SRCREV = "643047fe28da48ee377ec8acdffc4b36b88667a9"
 
 # This sets your staging directory based on WORKDIR, where WORKDIR is defined at 
 # https://docs.yoctoproject.org/ref-manual/variables.html?highlight=workdir#term-WORKDIR
-# We reference the "server" directory here to build from the "server" directory
-# in your assignments repo
-S = "${WORKDIR}/git/server"
+S = "${WORKDIR}/git"
 
-# TODO: Add the aesdsocket application and any other files you need to install
+inherit module
+
+EXTRA_OEMAKE:append:task-install = " -C ${STAGING_KERNEL_DIR} M=${S}/misc-modules"
+EXTRA_OEMAKE += "KERNELDIR=${STAGING_KERNEL_DIR}"
+
 # See https://git.yoctoproject.org/poky/plain/meta/conf/bitbake.conf?h=kirkstone
-FILES:${PN} += "${bindir}/aesdsocket"
-# TODO: customize these as necessary for any libraries you need for your application
-# (and remove comment)
-TARGET_LDFLAGS += " -pthread -lrt"
-#TARGET_CC_ARCH += "${LDFLAGS}"
-#INSANE_SKIP:${PN} += "ldflags"
-#PACKAGECONFIG[aesd-assignments] += " pthread rt"
+FILES:${PN} += "${bindir}/module_load"
+FILES:${PN} += "${bindir}/module_unload"
+FILES:${PN} += "${sysconfdir}/*"
 
-# flag the package as one which uses init scripts
 # Update rc.d class for install the init service /etc/rc5.d/
 inherit update-rc.d
+#flag the package as one which uses init scripts
 INITSCRIPT_PACKAGES = "${PN}"
-INITSCRIPT_NAME:${PN} = "aesdsocket-start-stop"
+INITSCRIPT_NAME:${PN} = "misc-modules-start-stop"
 
 do_configure () {
 	:
@@ -53,10 +53,15 @@ do_install () {
 
 	#bindir = usr/bin
 	install -d ${D}${bindir}
-	install -m 0755 ${S}/aesdsocket ${D}${bindir}/
+	install -m 0755 ${S}/misc-modules/module_load ${D}${bindir}/
+	install -m 0755 ${S}/misc-modules/module_unload ${D}${bindir}/
 
 	#sysconfdir = etc, so etc/init.d
 	install -d ${D}${sysconfdir}/init.d
-	install -m 0755 ${S}/aesdsocket-start-stop ${D}${sysconfdir}/init.d
+	install -m 0755 ${WORKDIR}/misc-modules-start-stop ${D}${sysconfdir}/init.d
 
+    #base_libdir = /lib
+	install -d ${D}${base_libdir}/modules/${@KERNEL_VERSION}/
+	install -m 0755 ${S}/misc-modules/faulty.ko ${D}${base_libdir}/modules/${@KERNEL_VERSION}/
+	install -m 0755 ${S}/misc-modules/hello.ko ${D}${base_libdir}/modules/${@KERNEL_VERSION}/
 }
