@@ -1,0 +1,13 @@
+diff --git a/aesdchar.h b/aesdchar.h
+index e12030c..2a59383 100644
+--- a/aesdchar.h
++++ b/aesdchar.h
+@@ -18,7 +18,7 @@
+ #ifdef AESD_DEBUG
+ #  ifdef __KERNEL__
+      /* This one if debugging is on, and kernel space */
+-#    define PDEBUG(fmt, args...) printk( KERN_DEBUG "aesdchar: " fmt, ## args)
++#    define PDEBUG(fmt, args...) printk( KERN_WARNING "aesdchar: " fmt, ## args)
+ #  else
+      /* This one for user space */
+ #    define PDEBUG(fmt, args...) fprintf(stderr, fmt, ## args)
