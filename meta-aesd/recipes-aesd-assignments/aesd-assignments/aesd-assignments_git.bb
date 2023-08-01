@@ -8,7 +8,7 @@ SRC_URI = "git://git@github.com/salvadorz/elsd;protocol=ssh;branch=master"
 
 PV = "1.0+git${SRCPV}"
 # TODO: set to reference a specific commit hash in your assignment repo
-SRCREV = "199ec7f0daa3560e24716d1cc01fc7d591478215"
+SRCREV = "4653b12df8da9f710b68caec5cb3bef6e1e944a3"
 
 # This sets your staging directory based on WORKDIR, where WORKDIR is defined at 
 # https://docs.yoctoproject.org/ref-manual/variables.html?highlight=workdir#term-WORKDIR
